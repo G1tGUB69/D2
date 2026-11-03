@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Music Room Docs</title>
+  <style>
+    :root {
+      --bg: #f6f0e6;
+      --panel: #fffaf2;
+      --panel-2: #efe5d4;
+      --ink: #2a1d24;
+      --muted: #6e5a52;
+      --line: #dccbb0;
+      --brass: #9a6f1f;
+      --brass-soft: #e9c46a;
+      --neon: #c2287f;
+      --code-bg: #efe5d4;
+      --c-guitar: #b86f1d;
+      --c-keyboard: #13836f;
+      --c-drums: #c23a52;
+      --c-violin: #b5561a;
+      --c-trumpet: #9a7a00;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0d0a10;
+        --panel: #1a1220;
+        --panel-2: #241a2c;
+        --ink: #f5e6c8;
+        --muted: #b9a68c;
+        --line: #3a2c40;
+        --brass: #e9c46a;
+        --brass-soft: #b8954c;
+        --neon: #ff7ac8;
+        --code-bg: #241a2c;
+        --c-guitar: #ffcf8a;
+        --c-keyboard: #8af5e2;
+        --c-drums: #ff8a9a;
+        --c-violin: #ffb36b;
+        --c-trumpet: #ffe27a;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0d0a10;
+      --panel: #1a1220;
+      --panel-2: #241a2c;
+      --ink: #f5e6c8;
+      --muted: #b9a68c;
+      --line: #3a2c40;
+      --brass: #e9c46a;
+      --brass-soft: #b8954c;
+      --neon: #ff7ac8;
+      --code-bg: #241a2c;
+      --c-guitar: #ffcf8a;
+      --c-keyboard: #8af5e2;
+      --c-drums: #ff8a9a;
+      --c-violin: #ffb36b;
+      --c-trumpet: #ffe27a;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.6 "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+    }
+    a { color: var(--brass); }
+    code, kbd {
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.88em;
+    }
+    code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px; }
+    kbd {
+      display: inline-block;
+      min-width: 1.9em;
+      padding: 1px 7px;
+      text-align: center;
+      border: 1px solid var(--line);
+      border-bottom-width: 3px;
+      border-radius: 6px;
+      background: var(--panel);
+      font-weight: bold;
+    }
+
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+
+    header.hero {
+      border-bottom: 1px solid var(--line);
+      padding: 56px 0 40px;
+      text-align: center;
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      letter-spacing: 0.04em;
+      color: var(--neon);
+      text-shadow: 0 0 22px color-mix(in srgb, var(--neon) 45%, transparent);
+    }
+    .hero p { max-width: 640px; margin: 12px auto 24px; color: var(--muted); font-size: 1.08rem; }
+    .btn {
+      display: inline-block;
+      padding: 10px 22px;
+      border-radius: 999px;
+      background: var(--brass-soft);
+      color: #2a1a0c;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .btn:hover { filter: brightness(1.08); }
+
+    nav.toc {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--line);
+    }
+    nav.toc ul {
+      display: flex;
+      gap: 4px 18px;
+      list-style: none;
+      margin: 0;
+      padding: 10px 0;
+      overflow-x: auto;
+      white-space: nowrap;
+      font-size: 0.92rem;
+    }
+    nav.toc a { color: var(--muted); text-decoration: none; }
+    nav.toc a:hover { color: var(--brass); }
+
+    section { padding: 44px 0 8px; }
+    h2 {
+      margin: 0 0 6px;
+      font-size: 1.6rem;
+      color: var(--brass);
+    }
+    h2 + .lede { margin-top: 0; color: var(--muted); }
+    h3 { margin: 0 0 6px; font-size: 1.1rem; }
+
+    .grid { display: grid; gap: 16px; }
+    .g2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .g3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+    .card p { margin: 6px 0; }
+    .card ul { margin: 6px 0; padding-left: 20px; }
+
+    /* Controls */
+    .ctl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 14px; align-items: center; margin: 8px 0 0; }
+    .ctl dt { text-align: right; }
+    .ctl dd { margin: 0; color: var(--muted); }
+
+    /* Flow */
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0 8px;
+    }
+    .step {
+      flex: 1 1 170px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--brass-soft);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.93rem;
+    }
+    .step b { display: block; font-size: 1rem; margin-bottom: 2px; }
+    .arrow { color: var(--brass); font-size: 1.4rem; }
+    @media (max-width: 640px) { .arrow { display: none; } }
+
+    /* Instruments */
+    .inst { border-top: 5px solid var(--accent); }
+    .inst h3 { color: var(--accent); display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+    .inst h3 small { color: var(--muted); font-weight: normal; font-size: 0.8rem; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+    .tag {
+      font-size: 0.76rem;
+      padding: 2px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+    .inst dl { margin: 8px 0 0; font-size: 0.92rem; }
+    .inst dt { font-weight: bold; margin-top: 8px; }
+    .inst dd { margin: 0; color: var(--muted); }
+    .try { display: inline-block; margin-top: 12px; font-size: 0.88rem; }
+
+    /* Mapping table */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; margin-top: 14px; }
+    table { border-collapse: collapse; width: 100%; min-width: 620px; background: var(--panel); font-size: 0.93rem; }
+    th, td { padding: 9px 12px; text-align: center; border-bottom: 1px solid var(--line); }
+    thead th { background: var(--panel-2); font-size: 0.85rem; }
+    tbody tr:last-child td { border-bottom: 0; }
+    td:first-child, th:first-child { text-align: left; }
+    .valve { font-family: ui-monospace, Consolas, monospace; letter-spacing: 2px; }
+
+    .note {
+      border-left: 4px solid var(--brass-soft);
+      background: var(--panel-2);
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-size: 0.94rem;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border-radius: 10px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+
+    footer { margin: 48px 0 0; padding: 24px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.88rem; text-align: center; }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>♪ MUSIC ROOM ♫</h1>
+    <p>A first-person browser toy. Walk up to a shelf of five instruments, pick one up, and play it from your keyboard. All graphics and sound are generated in code.</p>
+    <a class="btn" href="../index.html">▶ Play the game</a>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <div class="wrap">
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#controls">Controls</a></li>
+      <li><a href="#loop">Game loop</a></li>
+      <li><a href="#instruments">Instruments</a></li>
+      <li><a href="#mapping">Note map</a></li>
+      <li><a href="#feedback">Feedback &amp; feel</a></li>
+      <li><a href="#audio">Audio engine</a></li>
+      <li><a href="#tech">Technical notes</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ============================================================ -->
+  <section id="overview">
+    <h2>Overview</h2>
+    <p class="lede">You stand in a small music room lit by a neon sign. On the counter in front of you are five instruments under spotlights. You can see your own arms, and they react to what you do.</p>
+    <div class="grid g3">
+      <div class="card">
+        <h3>🎯 Pick</h3>
+        <p>Point at an instrument with the mouse, or move between them with the arrow keys. Your right hand follows the cursor.</p>
+      </div>
+      <div class="card">
+        <h3>🎶 Play</h3>
+        <p>Eight keys on the home row play a full C-major octave, or eight drum sounds on the drum kit. The instrument and your hands move as you play.</p>
+      </div>
+      <div class="card">
+        <h3>🔁 Swap</h3>
+        <p>Put the instrument back, or press <kbd>1</kbd>–<kbd>5</kbd> to change instruments directly. The game handles the put-down and pick-up for you.</p>
+      </div>
+    </div>
+    <div class="note"><strong>No asset files.</strong> Every sprite is drawn on a canvas and every sound is made with the Web Audio API, so the whole game is just <code>index.html</code>, <code>style.css</code> and three scripts.</div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="controls">
+    <h2>Controls</h2>
+    <p class="lede">The controls change depending on whether you are browsing the shelf or holding an instrument.</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Browsing the shelf</h3>
+        <dl class="ctl">
+          <dt>Mouse</dt><dd>Look around (slight camera sway) and highlight the instrument under the cursor</dd>
+          <dt>Left click</dt><dd>Pick up the highlighted instrument</dd>
+          <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Move the highlight (wraps around)</dd>
+          <dt><kbd>Enter</kbd> / <kbd>Space</kbd></dt><dd>Pick up the highlighted instrument</dd>
+          <dt><kbd>1</kbd>–<kbd>5</kbd></dt><dd>Pick up that instrument directly (number row or numpad)</dd>
+        </dl>
+      </div>
+      <div class="card">
+        <h3>Holding an instrument</h3>
+        <dl class="ctl">
+          <dt><kbd>A</kbd>…<kbd>K</kbd></dt><dd>Play notes 1–8. Hold the key to sustain on keyboard, violin and trumpet</dd>
+          <dt>Click pad</dt><dd>The 8 on-screen pads at the top also play notes</dd>
+          <dt><kbd>Esc</kbd> / <kbd>⌫</kbd></dt><dd>Put the instrument back on the shelf</dd>
+          <dt>Right click</dt><dd>Put the instrument back on the shelf</dd>
+          <dt><kbd>1</kbd>–<kbd>5</kbd></dt><dd>Swap to another instrument</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="note"><strong>Any keyboard layout works.</strong> Note keys are read by <em>physical position</em> (<code>KeyA</code>…<code>KeyK</code>). On browsers that support the Keyboard Map API, the on-screen pads show your real key caps, for example <kbd>Q</kbd> instead of <kbd>A</kbd> on AZERTY.</div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="loop">
+    <h2>Game loop</h2>
+    <p class="lede">The game has one main state, the hold progress <code>p</code>, which goes from <code>0</code> (on the shelf) to <code>1</code> (in your hands). Each transition takes 0.55 s with an ease-in-out curve.</p>
+    <div class="flow" role="list">
+      <div class="step" role="listitem"><b>1 · Browse</b>The focused instrument bobs, glows and gets a brighter spotlight. A tooltip shows its name and description.</div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="step" role="listitem"><b>2 · Pick up</b>The instrument arcs up off the shelf into your hands. The room darkens and the browsing hint fades out.</div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="step" role="listitem"><b>3 · Play</b>Input opens once <code>p&nbsp;&gt;&nbsp;0.85</code>. The note pads, the instrument name and the "put back" hint appear.</div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="step" role="listitem"><b>4 · Put back</b>All notes stop and the instrument returns to its slot. Then you are back to browsing.</div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <h3>Swapping instruments</h3>
+        <p>Pressing <kbd>1</kbd>–<kbd>5</kbd> while holding an instrument puts the current one back first. The new choice is remembered as <em>pending</em> and is picked up automatically once the first one is on the shelf. Pressing the number of the instrument you are already holding does nothing.</p>
+      </div>
+      <div class="card">
+        <h3>Changing your mind</h3>
+        <p>If you press the number of the instrument you are putting back, it comes back to your hands. Every pick-up starts with fresh instrument effects (strings still, valves up, bow centred).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="instruments">
+    <h2>Instruments</h2>
+    <p class="lede">Each instrument has its own sound, its own way of being held and its own reaction when you play it.</p>
+    <div class="grid g2">
+
+      <article class="card inst" style="--accent: var(--c-guitar)">
+        <h3>1 · Guitar <small>Plucked nylon strings</small></h3>
+        <div class="tags"><span class="tag">One-shot</span><span class="tag">C3 – C4</span></div>
+        <dl>
+          <dt>Sound</dt><dd>Karplus-Strong plucked string, one octave below the other melodic instruments. Each note rings for about 2.5 s even after you release the key.</dd>
+          <dt>Hands</dt><dd>Left hand holds the neck. Right hand strums across the sound hole on each note.</dd>
+          <dt>Visuals</dt><dd>The six strings vibrate in proportion to the most recent notes.</dd>
+        </dl>
+        <a class="try" href="../index.html?pick=1">Start holding it →</a>
+      </article>
+
+      <article class="card inst" style="--accent: var(--c-keyboard)">
+        <h3>2 · Keyboard <small>Electric piano</small></h3>
+        <div class="tags"><span class="tag">Sustains while held</span><span class="tag">C4 – C5</span></div>
+        <dl>
+          <dt>Sound</dt><dd>Triangle wave with sine overtones: a fast attack, then a slow decay over about 5 s. Releasing the key fades it out quickly.</dd>
+          <dt>Hands</dt><dd>Both index fingers point. The left hand follows the last of keys 1–4 played, the right hand the last of keys 5–8.</dd>
+          <dt>Visuals</dt><dd>Pressed keys sink and turn gold. The LCD shows the note, for example <code>NOTE E4</code>.</dd>
+        </dl>
+        <a class="try" href="../index.html?pick=2">Start holding it →</a>
+      </article>
+
+      <article class="card inst" style="--accent: var(--c-drums)">
+        <h3>3 · Drums <small>Snare &amp; cymbal kit</small></h3>
+        <div class="tags"><span class="tag">One-shot</span><span class="tag">8 pieces</span></div>
+        <dl>
+          <dt>Sound</dt><dd>Kick, snare, closed and open hi-hat, three toms and a crash, made from pitch-swept tones and filtered noise.</dd>
+          <dt>Hands</dt><dd>Two drumsticks. Drum hits alternate left and right. Cymbal hits (hats and crash) always use the right stick on the cymbal.</dd>
+          <dt>Visuals</dt><dd>The drum head dips and a red ripple spreads out. The cymbal swings and settles.</dd>
+        </dl>
+        <a class="try" href="../index.html?pick=3">Start holding it →</a>
+      </article>
+
+      <article class="card inst" style="--accent: var(--c-violin)">
+        <h3>4 · Violin <small>Bowed strings</small></h3>
+        <div class="tags"><span class="tag">Sustains while held</span><span class="tag">C4 – C5</span></div>
+        <dl>
+          <dt>Sound</dt><dd>Two slightly detuned sawtooth waves through a body-resonance filter. Vibrato builds in over the first 0.45 s.</dd>
+          <dt>Hands</dt><dd>Left hand on the neck. Right hand moves the bow back and forth while any note is held.</dd>
+          <dt>Visuals</dt><dd>The bow saws across the strings and slowly returns to centre when you stop. The four strings vibrate.</dd>
+        </dl>
+        <a class="try" href="../index.html?pick=4">Start holding it →</a>
+      </article>
+
+      <article class="card inst" style="--accent: var(--c-trumpet)">
+        <h3>5 · Trumpet <small>Bright brass</small></h3>
+        <div class="tags"><span class="tag">Sustains while held</span><span class="tag">C4 – C5</span></div>
+        <dl>
+          <dt>Sound</dt><dd>Sawtooth plus square wave with a quick filter sweep for a brassy start, then gentle vibrato.</dd>
+          <dt>Hands</dt><dd>Left hand supports the tubing. Right hand rests over the valves.</dd>
+          <dt>Visuals</dt><dd>The three valves press down using real trumpet fingerings for each note (see the note map). They come back up when every key is released.</dd>
+        </dl>
+        <a class="try" href="../index.html?pick=5">Start holding it →</a>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="mapping">
+    <h2>Note map</h2>
+    <p class="lede">Every instrument uses the same eight keys. The melodic instruments play a C-major scale; the drums play kit pieces.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Key (QWERTY)</th>
+            <th>Pad</th>
+            <th>Guitar</th>
+            <th>Keyboard · Violin</th>
+            <th>Trumpet note</th>
+            <th>Trumpet valves</th>
+            <th>Drums</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><kbd>A</kbd></td><td>1</td><td>C3</td><td>C4</td><td>C4</td><td class="valve">○○○</td><td>Kick</td></tr>
+          <tr><td><kbd>S</kbd></td><td>2</td><td>D3</td><td>D4</td><td>D4</td><td class="valve">●○●</td><td>Snare</td></tr>
+          <tr><td><kbd>D</kbd></td><td>3</td><td>E3</td><td>E4</td><td>E4</td><td class="valve">●●○</td><td>Hi-hat</td></tr>
+          <tr><td><kbd>F</kbd></td><td>4</td><td>F3</td><td>F4</td><td>F4</td><td class="valve">●○○</td><td>Open hat</td></tr>
+          <tr><td><kbd>G</kbd></td><td>5</td><td>G3</td><td>G4</td><td>G4</td><td class="valve">○○○</td><td>Tom 1 (low)</td></tr>
+          <tr><td><kbd>H</kbd></td><td>6</td><td>A3</td><td>A4</td><td>A4</td><td class="valve">●●○</td><td>Tom 2 (mid)</td></tr>
+          <tr><td><kbd>J</kbd></td><td>7</td><td>B3</td><td>B4</td><td>B4</td><td class="valve">○●○</td><td>Tom 3 (high)</td></tr>
+          <tr><td><kbd>K</kbd></td><td>8</td><td>C4</td><td>C5</td><td>C5</td><td class="valve">○○○</td><td>Crash</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="color:var(--muted);font-size:.9rem">Valves are shown as 1·2·3 (● pressed). The on-screen pads label notes as C D E F G A B C. Several keys can be held at once to play chords.</p>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="feedback">
+    <h2>Feedback &amp; feel</h2>
+    <div class="grid g3">
+      <div class="card">
+        <h3>Floating notes</h3>
+        <p>Each note sends up two ♪/♫ symbols in the instrument's colour, from the sound hole, bell or drum head. They drift and fade out over about 1.4 s.</p>
+      </div>
+      <div class="card">
+        <h3>Note pads</h3>
+        <p>The top HUD lights up the pad in the instrument's colour while its note is held or ringing. Pads show the key cap and the note or drum name.</p>
+      </div>
+      <div class="card">
+        <h3>Living camera</h3>
+        <p>While browsing, the view sways slightly toward the mouse and the walls move with parallax. A slow breathing bob runs all the time. A held instrument sways a little in your hands.</p>
+      </div>
+      <div class="card">
+        <h3>First-person arms</h3>
+        <p>Browsing: your right hand points at the cursor and your left hand rests. Holding: both arms rise into a pose for that instrument (grip, point, open or stick).</p>
+      </div>
+      <div class="card">
+        <h3>Room lighting</h3>
+        <p>Spotlights brighten over the focused slot and its brass name plate turns gold. Holding an instrument puts a vignette over the room. The neon sign flickers now and then.</p>
+      </div>
+      <div class="card">
+        <h3>Custom cursor</h3>
+        <p>The system cursor is hidden and replaced with a small circular reticle drawn on the canvas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="audio">
+    <h2>Audio engine</h2>
+    <p class="lede"><code>js/audio.js</code> exposes a small <code>Sound</code> module with <code>init()</code> and <code>play(id, noteIndex)</code>.</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Signal chain</h3>
+        <pre>voice → out ─┬─────────────→ master (0.7) → compressor → speakers
+             └→ reverb (1.6 s) → wet (0.25) ─┘</pre>
+        <p>The reverb impulse is random noise generated at start-up. A dynamics compressor keeps chords and drum rolls from clipping.</p>
+      </div>
+      <div class="card">
+        <h3>Voices</h3>
+        <ul>
+          <li><strong>One-shot</strong> (guitar, drums): <code>play</code> returns <code>null</code> and the sound rings out by itself.</li>
+          <li><strong>Sustained</strong> (keyboard, violin, trumpet): <code>play</code> returns <code>{ stop() }</code>, which fades the gain out smoothly to avoid clicks.</li>
+          <li>Guitar string buffers are cached per pitch, so they are only computed once.</li>
+          <li>The audio context starts on the first click or key press, as browsers require.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="tech">
+    <h2>Technical notes</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Project files</h3>
+        <ul>
+          <li><code>index.html</code>: the canvas and script tags</li>
+          <li><code>style.css</code>: centres the canvas and hides the system cursor</li>
+          <li><code>js/draw.js</code>: room, shelf, instruments, arms and HUD helpers</li>
+          <li><code>js/audio.js</code>: synthesis and the effects chain</li>
+          <li><code>js/main.js</code>: instrument definitions, state, update and render loop, input</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Rendering</h3>
+        <ul>
+          <li>Fixed 1280 × 720 logical canvas, scaled to fit the window with letterboxing.</li>
+          <li>Sharp on high-DPI screens: the backing store is scaled by <code>devicePixelRatio</code>.</li>
+          <li>Frame time is capped at 50 ms so the animation does not jump after the tab was in the background.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Deep links</h3>
+        <p>Add <code>?pick=N</code> (1–5) to start already holding instrument <em>N</em>, which is useful for testing:</p>
+        <p><a href="../index.html?pick=1">?pick=1</a> · <a href="../index.html?pick=2">?pick=2</a> · <a href="../index.html?pick=3">?pick=3</a> · <a href="../index.html?pick=4">?pick=4</a> · <a href="../index.html?pick=5">?pick=5</a></p>
+      </div>
+      <div class="card">
+        <h3>Robustness &amp; limits</h3>
+        <ul>
+          <li>Held notes are released when the window loses focus, so no notes get stuck.</li>
+          <li>Key auto-repeat is ignored, so holding a key does not retrigger the note.</li>
+          <li>Only one on-screen pad can be pressed at a time with the mouse or touch. Use the keyboard for chords.</li>
+          <li>On touch screens there is no right-click or <kbd>Esc</kbd>, so there is no way to put an instrument back.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">Music Room — feature &amp; mechanics reference · <a href="../index.html">Play</a></div>
+</footer>
+
+</body>
+</html>
